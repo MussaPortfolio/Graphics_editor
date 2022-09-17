@@ -6,7 +6,11 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.image import Image
-from kivy.uix.widget import Widget
+from skimage.io import imread, imsave
+from skimage import img_as_float
+from numpy import clip
+
+# from
 
 # Установка параметров окна программы
 # Config.set('graphics', 'resizable', '0') # Заблокировать разворот окна на весь экран
@@ -20,17 +24,37 @@ class GraphEditApp(App):
         self.im_in.source = path
         self.im_in.reload()
 
-    def contrast_plus(self):
-        pass
+    def contrast_plus(self, instance):
+        path = self.path.text
+        img = imread(path)
+        img_f = img_as_float(img)
+        imsave('temp.jpg', clip(img_f * float(self.koef.text), 0, 1))
+        self.im_out.source = 'temp.jpg'
+        self.im_out.reload()
 
-    def contrast_minus(self):
-        pass
+    def contrast_minus(self, instance):
+        path = self.path.text
+        img = imread(path)
+        img_f = img_as_float(img)
+        imsave('temp.jpg', clip(img_f / float(self.koef.text), 0, 1))
+        self.im_out.source = 'temp.jpg'
+        self.im_out.reload()
 
-    def bregtnes_plus(self):
-        pass
+    def bregtnes_plus(self, instance):
+        path = self.path.text
+        img = imread(path)
+        img_f = img_as_float(img)
+        imsave('temp.jpg', clip(img_f + float(self.koef.text), 0, 1))
+        self.im_out.source = 'temp.jpg'
+        self.im_out.reload()
 
-    def bregtnes_minus(self):
-        pass
+    def bregtnes_minus(self, instance):
+        path = self.path.text
+        img = imread(path)
+        img_f = img_as_float(img)
+        imsave('temp.jpg', clip(img_f - float(self.koef.text), 0, 1))
+        self.im_out.source = 'temp.jpg'
+        self.im_out.reload()
 
     def build(self):
         padding_param = 10
@@ -61,10 +85,10 @@ class GraphEditApp(App):
         al.add_widget(self.koef)
         bl3.add_widget(al)
 
-        bl4.add_widget(Button(text='Contrast+'))
-        bl4.add_widget(Button(text='Contrast-'))
-        bl4.add_widget(Button(text='bregtnes+'))
-        bl4.add_widget(Button(text='bregtnes-'))
+        bl4.add_widget(Button(text='Contrast+', on_press=self.contrast_plus))
+        bl4.add_widget(Button(text='Contrast-', on_press=self.contrast_minus))
+        bl4.add_widget(Button(text='bregtnes+', on_press=self.bregtnes_plus))
+        bl4.add_widget(Button(text='bregtnes-', on_press=self.bregtnes_minus))
 
         bl.add_widget(bl1)
         bl.add_widget(bl2)
